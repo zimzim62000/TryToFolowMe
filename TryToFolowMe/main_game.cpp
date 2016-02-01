@@ -55,17 +55,20 @@ void main_game::DebugMode(sf::RenderWindow* window)
 		
 		this->mouseClickRight = false;
 		sf::Vector2i position = sf::Mouse::getPosition(*window);
-		std::pair<int, int> pos = this->map->ConvertPosition(position.x, position.y);
-		if(this->map->getOnThisPositionNoeud(pos.first, pos.second).passable == 1){
-			std::queue<Point*> roadMap = this->map->CalculateParcours(player->getPosition(), position, window);
-			while (roadMap.size() > 0) {
-				player->AddTarget(roadMap.front()->x, roadMap.front()->y);
-				roadMap.pop();
+		if(position.x > 0 && position.x < this->map->width*this->map->tileWidth && position.y > 0 && position.y < this->map->height*this->map->tileHeight)
+		{
+			std::pair<int, int> pos = this->map->ConvertPosition(position.x, position.y);
+			if(this->map->getOnThisPositionNoeud(pos.first, pos.second).passable == 1){
+				std::queue<Point*> roadMap = this->map->CalculateParcours(player->getPosition(), position, window);
+				while (roadMap.size() > 0) {
+					player->AddTarget(roadMap.front()->x, roadMap.front()->y);
+					roadMap.pop();
+				}
+				roadMap.empty();
 			}
-			roadMap.empty();
-		}
-		else {
-			std::cout << "erreur i cannot acces here" << std::endl;
+			else {
+				std::cout << "erreur i cannot acces here" << std::endl;
+			}
 		}
 	}
 }
