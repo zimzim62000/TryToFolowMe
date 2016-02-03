@@ -11,6 +11,7 @@ void EntityManager::Add(std::string name, Entity* entity)
 		name += "0";
 		found = this->entities.find(name);
 	}
+	entity->setName(name);
 	this->entities.insert(std::make_pair(name, entity));
 }
 

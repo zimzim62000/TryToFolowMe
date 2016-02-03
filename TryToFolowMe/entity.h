@@ -37,6 +37,8 @@ public:
 	~Entity();
 
 	bool getOnMovement();
+	void setName(std::string name);
+	std::string getName();
 
 protected:
 	void MoveOnTarget(float const dt);
@@ -45,6 +47,7 @@ protected:
 	int groupId;
 	bool busy, onMove;
 	float speed;
+	std::string name;
 private:
 	sf::Texture* texture;
 	std::queue<Point*> target;

@@ -220,7 +220,7 @@ std::queue<Point*>  MyMap::CalculateParcours(const sf::Vector2f &start, const sf
 	if(start_x != end_x || start_y != end_y){
 		PathFinding MyPathFinding;
 		sf::Clock deltaTime;
-		MyPathFinding.findRoad(this, window, start_x, start_y, end_x, end_y);
+		MyPathFinding.findRoad(this, start_x, start_y, end_x, end_y);
 		if(MyPathFinding.chemin.size() != 0){
 			std::cout << deltaTime.restart().asSeconds() << std::endl;
 			while(MyPathFinding.chemin.size() > 0) {

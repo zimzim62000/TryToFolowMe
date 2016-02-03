@@ -6,6 +6,7 @@
 #include "game_state.h"
 #include "map.h"
 #include "player.h"
+#include "camera.h"
 
 #include <iostream>
 
@@ -17,8 +18,9 @@ public:
 	void Render(float const dt, sf::RenderWindow* window);
 	void Destroy(sf::RenderWindow* window);
 private:
-	void DebugMode(sf::RenderWindow* window);
+	void CatchUserAction(sf::RenderWindow* window);
 
+	Camera* camera;
 	MyMap* map;
 	EntityManager* manager;
 	Player* player;

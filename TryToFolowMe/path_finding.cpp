@@ -6,7 +6,7 @@ PathFinding::PathFinding() {
 
 }
 
-void PathFinding::findRoad(MyMap* map, sf::RenderWindow* window, const int start_x, const int start_y, const int end_x, const int end_y)
+void PathFinding::findRoad(MyMap* map, const int start_x, const int start_y, const int end_x, const int end_y)
 {
 	arrivee.x = end_x;
 	arrivee.y = end_y;
@@ -24,7 +24,7 @@ void PathFinding::findRoad(MyMap* map, sf::RenderWindow* window, const int start
 
 	liste_ouverte[courant] = depart;
 	ajouter_liste_fermee(courant);
-	ajouter_cases_adjacentes(courant, window, map);
+	ajouter_cases_adjacentes(courant, map);
 
 	while (!((courant.first == arrivee.x) && (courant.second == arrivee.y))
 		&&
@@ -38,7 +38,7 @@ void PathFinding::findRoad(MyMap* map, sf::RenderWindow* window, const int start
 		// on le passe dans la liste fermee, il ne peut pas déjà y être
 		ajouter_liste_fermee(courant);
 
-		ajouter_cases_adjacentes(courant, window, map);
+		ajouter_cases_adjacentes(courant, map);
 	}
 
 	if ((courant.first == arrivee.x) && (courant.second == arrivee.y)) {
@@ -78,7 +78,7 @@ std::pair<int, int> PathFinding::meilleur_noeud(l_noeud& l) {
 	return m_noeud;
 }
 
-void PathFinding::ajouter_cases_adjacentes(std::pair <int, int>& n, sf::RenderWindow* window, MyMap* map) {
+void PathFinding::ajouter_cases_adjacentes(std::pair <int, int>& n, MyMap* map) {
 	noeud tmp;
 
 	// on met tous les noeud adjacents dans la liste ouverte (+vérif)

@@ -19,6 +19,16 @@ Entity::Entity()
 	this->speed = 1;
 }
 
+void Entity::setName(const std::string name)
+{
+	this->name = name;
+}
+
+std::string Entity::getName()
+{
+	return this->name;
+}
+
 void Entity::Load(std::string filename)
 {
 	this->texture->loadFromFile("Graphics/Images/" + filename);
