@@ -10,9 +10,9 @@ void main_game::Initialize(sf::RenderWindow* window)
 
 	this->map = new MyMap(manager);
 
-	this->map->Load("map3.json");
+	this->map->Load("map4.json");
 
-	this->manager->Add("player", new Player(this->manager, this->map, this->map->tileWidth, 0 , 3.0f));
+	this->manager->Add("player", new Player(this->manager, this->map, this->map->tileWidth, 0 , 5.0f));
 
 	this->font = new sf::Font();
 	this->font->loadFromFile("Graphics/font.ttf");
@@ -21,6 +21,8 @@ void main_game::Initialize(sf::RenderWindow* window)
 	this->pausedText->setOrigin(this->pausedText->getGlobalBounds().width / 2, this->pausedText->getGlobalBounds().height / 2);
 	this->pausedText->setPosition(window->getSize().x / 2, window->getSize().y / 2);
 
+	this->zoom = 0;
+	this->currentZoom = 1;
 }
 
 void main_game::DebugMode(sf::RenderWindow* window)
@@ -46,6 +48,38 @@ void main_game::DebugMode(sf::RenderWindow* window)
 				this->mouseClickRight = true;
 			}
 		}
+
+		if (event.type == sf::Event::MouseWheelScrolled)
+		{
+			if (event.mouseWheelScroll.delta > 0) {
+				this->zoom++;
+			}else if (event.mouseWheelScroll.delta < 0) {
+				this->zoom--;
+			}
+			if (this->zoom == 0 ) {
+				this->zoom = 0;
+				sf::View view = window->getDefaultView();
+				this->currentZoom = 1;
+				view.zoom(this->currentZoom );
+				window->setView(view);
+			}
+			if (this->zoom > 1) {
+				this->zoom = 1;
+				sf::View view = window->getDefaultView();
+				this->currentZoom = 2;
+				view.zoom(this->currentZoom);
+				view.setSize(window->getSize().x*2, window->getSize().y * 2);
+				window->setView(view);
+			}
+			if (this->zoom < -1) {
+				this->zoom = -1;
+				sf::View view = window->getDefaultView();
+				this->currentZoom = 0.5f;
+				view.zoom(this->currentZoom);
+				view.setSize(window->getSize().x / 2, window->getSize().y / 2);
+				window->setView(view);
+			}
+		}
 		if (event.type == sf::Event::Closed)
 			window->close();
 	}
@@ -55,11 +89,23 @@ void main_game::DebugMode(sf::RenderWindow* window)
 		
 		this->mouseClickRight = false;
 		sf::Vector2i position = sf::Mouse::getPosition(*window);
+		std::cout << "before " << "x : " << position.x << " y : " << position.y << " zoom : " << this->currentZoom << std::endl;
+		std::cout << "player " << "x : " << player->getPosition().x << " y : " << player->getPosition().y << std::endl;
+		position.x = position.x * this->currentZoom;
+		position.y = position.y * this->currentZoom;
+		sf::View view = window->getDefaultView();
+		if (player->getPosition().x+player->getTextureRect().width / 2 > view.getSize().x / 2) {
+			position.x += player->getPosition().x + player->getTextureRect().width / 2 - view.getSize().x / 2;
+		}
+		if (player->getPosition().y+player->getTextureRect().height /2 > view.getSize().y / 2) {
+			position.y += player->getPosition().y + player->getTextureRect().height / 2 - view.getSize().y / 2;
+		}
+		std::cout << "after " << "x : " << position.x << " y : " << position.y << " zoom : " << this->currentZoom << std::endl;
 		if(position.x > 0 && position.x < this->map->width*this->map->tileWidth && position.y > 0 && position.y < this->map->height*this->map->tileHeight)
 		{
-			std::pair<int, int> pos = this->map->ConvertPosition(position.x, position.y);
+			std::pair<int, int> pos = this->map->ConvertPosition(position.x, position.y, this->currentZoom);
 			if(this->map->getOnThisPositionNoeud(pos.first, pos.second).passable == 1){
-				std::queue<Point*> roadMap = this->map->CalculateParcours(player->getPosition(), position, window);
+				std::queue<Point*> roadMap = this->map->CalculateParcours(player->getPosition(), position, window, this->currentZoom);
 				while (roadMap.size() > 0) {
 					player->AddTarget(roadMap.front()->x, roadMap.front()->y);
 					roadMap.pop();
@@ -67,8 +113,11 @@ void main_game::DebugMode(sf::RenderWindow* window)
 				roadMap.empty();
 			}
 			else {
-				std::cout << "erreur i cannot acces here" << std::endl;
+				std::cout << "Not a passable case" << std::endl;
 			}
+		}
+		else {
+			std::cout << "out side the map" << std::endl;
 		}
 	}
 }

@@ -174,12 +174,12 @@ MyMap::~MyMap()
 	this->mapEntity.clear();
 }
 
-std::pair<int, int> MyMap::ConvertPosition(const int x, const int y)
+std::pair<int, int> MyMap::ConvertPosition(const int x, const int y, const float zoom)
 {
 	return std::pair<int, int>(int(x / this->tileWidth), int(y / this->tileWidth));
 }
 
-case_game MyMap::getOnThisPosition(const int x, const int y) {
+case_game MyMap::getOnThisPosition(const int x, const int y, const float zoom) {
 	return *this->mapEntity[std::pair<int, int>(int(x / this->tileWidth), int(y / this->tileWidth))];
 }
 
@@ -206,7 +206,7 @@ case_game* MyMap::getCaseGame(const int value) {
 	}
 }
 
-std::queue<Point*>  MyMap::CalculateParcours(const sf::Vector2f &start, const sf::Vector2i &end, sf::RenderWindow* window)
+std::queue<Point*>  MyMap::CalculateParcours(const sf::Vector2f &start, const sf::Vector2i &end, sf::RenderWindow* window, const float zoom)
 {
 	bool find = false;
 	std::queue<Point*> targets;
@@ -217,14 +217,20 @@ std::queue<Point*>  MyMap::CalculateParcours(const sf::Vector2f &start, const sf
 	int end_x = abs(end.x / this->tileWidth);
 	int end_y = abs(end.y / this->tileHeight);
 
-	PathFinding MyPathFinding;
-	sf::Clock deltaTime;
-	MyPathFinding.findRoad(this, window, start_x, start_y, end_x, end_y);
-	std::cout << deltaTime.restart().asSeconds() << std::endl;
-	while(MyPathFinding.chemin.size() > 0) {
-		targets.push(new Point(MyPathFinding.chemin.front().x*this->tileWidth, MyPathFinding.chemin.front().y*this->tileWidth));
-		MyPathFinding.chemin.pop_front();
+	if(start_x != end_x || start_y != end_y){
+		PathFinding MyPathFinding;
+		sf::Clock deltaTime;
+		MyPathFinding.findRoad(this, window, start_x, start_y, end_x, end_y);
+		if(MyPathFinding.chemin.size() != 0){
+			std::cout << deltaTime.restart().asSeconds() << std::endl;
+			while(MyPathFinding.chemin.size() > 0) {
+				targets.push(new Point(MyPathFinding.chemin.front().x*this->tileWidth, MyPathFinding.chemin.front().y*this->tileWidth));
+				MyPathFinding.chemin.pop_front();
+			}
+		}/*
+		else {
+			targets.push(new Point(start_x*this->tileWidth, start_y*this->tileWidth));
+		}*/
 	}
-	
 	return targets;
 }

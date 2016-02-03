@@ -27,6 +27,8 @@ private:
 	
 	int selected;
 	bool paused, pauseKey, enterKey, debugKey, mouseClickRight, onMouseClickRight;
+	int zoom;
+	float currentZoom;
 };
 
 #endif MainGame_Zim

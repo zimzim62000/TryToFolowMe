@@ -41,9 +41,9 @@ public:
 	int width, height, tileWidth, tileHeight;
 	int* data;
 
-	std::pair<int,int> ConvertPosition(const int x, const int y);
-	case_game getOnThisPosition(const int x, const int y);
-	std::queue<Point*> CalculateParcours(const sf::Vector2f &start, const sf::Vector2i &end, sf::RenderWindow* window);
+	std::pair<int,int> ConvertPosition(const int x, const int y, const float zoom);
+	case_game getOnThisPosition(const int x, const int y, const float zoom);
+	std::queue<Point*> CalculateParcours(const sf::Vector2f &start, const sf::Vector2i &end, sf::RenderWindow* window, const float zoom);
 	case_game getOnThisPositionNoeud(const int x, const int y);
 private:
 	case_game* getCaseGame(const int value);
