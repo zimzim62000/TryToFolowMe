@@ -40,14 +40,15 @@ void main_game::CatchUserAction(sf::RenderWindow* window)
 		{
 			if (event.mouseButton.button == sf::Mouse::Right)
 			{
-
+				this->mouseClickRight = true;
 			}
 		}
 		if (event.type == sf::Event::MouseButtonReleased)
 		{
 			if (event.mouseButton.button == sf::Mouse::Right)
 			{
-				this->mouseClickRight = true;
+				this->onMouseClickRight = true;
+				this->mouseClickRight = false;
 			}
 		}
 
@@ -81,37 +82,41 @@ void main_game::CatchUserAction(sf::RenderWindow* window)
 	}
 	
 
-	if (this->mouseClickRight == true) {
-		
-		this->mouseClickRight = false;
-		sf::Vector2i position = sf::Mouse::getPosition(*window);
-		position.x = position.x * this->currentZoom;
-		position.y = position.y * this->currentZoom;
-		
-		if (player->getPosition().x+player->getTextureRect().width / 2 > this->camera->getSize().x / 2) {
-			position.x += player->getPosition().x + player->getTextureRect().width / 2 - this->camera->getSize().x / 2;
-		}
-		if (player->getPosition().y+player->getTextureRect().height /2 > this->camera->getSize().y / 2) {
-			position.y += player->getPosition().y + player->getTextureRect().height / 2 - this->camera->getSize().y / 2;
-		}
-		if(position.x > 0 && position.x < this->map->width*this->map->tileWidth && position.y > 0 && position.y < this->map->height*this->map->tileHeight)
-		{
-			std::pair<int, int> pos = this->map->ConvertPosition(position.x, position.y, this->currentZoom);
-			//std::cout << "pos x : " << position.x << " pos y : " << position.y << " convert x : " << pos.first << " y " << pos.second << std::endl;
-			if(this->map->getOnThisPositionNoeud(pos.first, pos.second).passable == 1){
-				std::queue<Point*> roadMap = this->map->CalculateParcours(player->getPosition(), position, window, this->currentZoom);
-				while (roadMap.size() > 0) {
-					player->AddTarget(roadMap.front()->x, roadMap.front()->y);
-					roadMap.pop();
+	if (this->mouseClickRight == true && this->onMouseClickRight == true) {
+
+		if(player->getBusy() == false){
+			this->onMouseClickRight = false;
+			sf::Vector2i position = sf::Mouse::getPosition(*window);
+			position.x = position.x * this->currentZoom;
+			position.y = position.y * this->currentZoom;
+
+			if (player->getPosition().x+player->getTextureRect().width / 2 > this->camera->getSize().x / 2) {
+				position.x += player->getPosition().x + player->getTextureRect().width / 2 - this->camera->getSize().x / 2;
+			}
+			if (player->getPosition().y+player->getTextureRect().height /2 > this->camera->getSize().y / 2) {
+				position.y += player->getPosition().y + player->getTextureRect().height / 2 - this->camera->getSize().y / 2;
+			}
+			if(position.x > 0 && position.x < this->map->width*this->map->tileWidth && position.y > 0 && position.y < this->map->height*this->map->tileHeight)
+			{
+				std::pair<int, int> pos = this->map->ConvertPosition(position.x, position.y, this->currentZoom);
+				//std::cout << "pos x : " << position.x << " pos y : " << position.y << " convert x : " << pos.first << " y " << pos.second << std::endl;
+				if(this->map->getOnThisPositionNoeud(pos.first, pos.second).passable == 1){
+					std::queue<Point*> roadMap = this->map->CalculateParcours(player->getPosition(), position, window, this->currentZoom);
+					while (roadMap.size() > 0) {
+						player->AddTarget(roadMap.front()->x, roadMap.front()->y);
+						roadMap.pop();
+					}
+					roadMap.empty();
 				}
-				roadMap.empty();
+				else {
+					std::cout << "Not a passable case" << std::endl;
+				}
 			}
 			else {
-				std::cout << "Not a passable case" << std::endl;
+				std::cout << "outside the map" << std::endl;
 			}
-		}
-		else {
-			std::cout << "out side the map" << std::endl;
+		}else {
+			std::cout << "Player busy" << std::endl;
 		}
 	}
 }

@@ -29,6 +29,11 @@ std::string Entity::getName()
 	return this->name;
 }
 
+bool Entity::getBusy()
+{
+	return this->busy;
+}
+
 void Entity::Load(std::string filename)
 {
 	this->texture->loadFromFile("Graphics/Images/" + filename);
@@ -93,6 +98,8 @@ void Entity::MoveOnTarget(float const dt)
 
 void Entity::AddTarget(const int x, const int y)
 {
+	this->busy = true;
+	this->onMove = true;
 	Point* pt = new Point(x, y);
 	this->target.push(pt);
 }

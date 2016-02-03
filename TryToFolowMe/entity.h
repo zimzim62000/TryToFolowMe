@@ -36,6 +36,8 @@ public:
 
 	~Entity();
 
+	bool getBusy();
+
 	bool getOnMovement();
 	void setName(std::string name);
 	std::string getName();
