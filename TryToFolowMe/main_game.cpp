@@ -65,6 +65,7 @@ void main_game::CatchUserAction(sf::RenderWindow* window)
 				this->zoom = 0;
 				this->currentZoom = 1;
 				this->camera->zoom(this->currentZoom );
+				this->camera->setSize(window->getSize().x, window->getSize().y);
 			}
 			if (this->zoom > 1) {
 				this->zoom = 1;
