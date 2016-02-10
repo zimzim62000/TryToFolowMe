@@ -6,7 +6,7 @@
 
 Player::Player(EntityManager* entityManager, MyMap* map, float x, float y, float speed) : Entity(speed)
 {
-	this->Load("player.png");
+	this->Load("player2.png");
 	this->setPosition(x, y);
 	this->map = map;
 	this->groupId = 1;

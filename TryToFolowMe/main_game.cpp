@@ -10,9 +10,11 @@ void main_game::Initialize(sf::RenderWindow* window)
 
 	this->map = new MyMap(manager);
 
-	this->map->Load("map4.json");
+	this->map->Load("newmap.json");
 
-	this->manager->Add("player", new Player(this->manager, this->map, this->map->tileWidth, 0 , 5.0f));
+	std::pair<int, int> playerPosition = this->map->getPositionavailable();
+
+	this->manager->Add("player", new Player(this->manager, this->map, playerPosition.first, playerPosition.second , 5.0f));
 
 	this->font = new sf::Font();
 	this->font->loadFromFile("Graphics/font.ttf");
@@ -89,12 +91,12 @@ void main_game::CatchUserAction(sf::RenderWindow* window)
 			sf::Vector2i position = sf::Mouse::getPosition(*window);
 			position.x = position.x * this->currentZoom;
 			position.y = position.y * this->currentZoom;
-
-			if (player->getPosition().x+player->getTextureRect().width / 2 > this->camera->getSize().x / 2) {
-				position.x += player->getPosition().x + player->getTextureRect().width / 2 - this->camera->getSize().x / 2;
+			//std::cout << "camera" << this->camera->getPosition().x << " - " << player->getPosition().x << std::endl;
+			if (this->camera->getPosition().x > this->camera->getSize().x / 2) {
+				position.x += this->camera->getPosition().x - this->camera->getSize().x / 2;
 			}
-			if (player->getPosition().y+player->getTextureRect().height /2 > this->camera->getSize().y / 2) {
-				position.y += player->getPosition().y + player->getTextureRect().height / 2 - this->camera->getSize().y / 2;
+			if (this->camera->getPosition().y> this->camera->getSize().y / 2) {
+				position.y += this->camera->getPosition().y - this->camera->getSize().y / 2;
 			}
 			if(position.x > 0 && position.x < this->map->width*this->map->tileWidth && position.y > 0 && position.y < this->map->height*this->map->tileHeight)
 			{

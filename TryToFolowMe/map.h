@@ -35,6 +35,8 @@ public:
 
 	std::string topArea, bottomArea, leftArea, rightArea;
 
+	std::pair<int, int> getPositionavailable();
+
 	~MyMap();
 
 	std::string tileSet;
