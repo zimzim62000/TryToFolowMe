@@ -4,7 +4,7 @@
 
 void main_game::Initialize(sf::RenderWindow* window)
 {
-	this->paused = this->mouseClickRight = this->onMouseClickRight = false;
+	this->paused = this->mouseClickRight = this->onMouseClickRight = this->mouseClickLeft = this->onMouseClickLeft = this->entityActive = false;
 
 	this->manager = new EntityManager();
 
@@ -27,8 +27,6 @@ void main_game::Initialize(sf::RenderWindow* window)
 	this->currentZoom = 1;
 	this->camera = new Camera();
 	this->camera->reset(sf::FloatRect(0, 0, window->getSize().x, window->getSize().y));
-
-	this->entityActive = false;
 }
 
 void main_game::CatchUserAction(sf::RenderWindow* window)
@@ -48,7 +46,7 @@ void main_game::CatchUserAction(sf::RenderWindow* window)
 			}
 			if (event.mouseButton.button == sf::Mouse::Left)
 			{
-				//this->mouseClickRight = true;
+				this->mouseClickLeft = true;
 			}
 		}
 		if (event.type == sf::Event::MouseButtonReleased)
@@ -57,6 +55,11 @@ void main_game::CatchUserAction(sf::RenderWindow* window)
 			{
 				this->onMouseClickRight = true;
 				this->mouseClickRight = false;
+			}
+			if (event.mouseButton.button == sf::Mouse::Left)
+			{
+				this->onMouseClickLeft = true;
+				this->mouseClickLeft = false;
 			}
 		}
 
@@ -90,21 +93,21 @@ void main_game::CatchUserAction(sf::RenderWindow* window)
 			window->close();
 	}
 	
+	if (this->mouseClickLeft == true && this->onMouseClickLeft == true) {
+		this->onMouseClickLeft = false;
+		sf::Vector2i position = this->GetMousePosition(window);
+		if (position.x > 0 && position.x < this->map->width*this->map->tileWidth && position.y > 0 && position.y < this->map->height*this->map->tileHeight)
+		{
+			case_game caseChecked = this->map->getOnThisPosition(position.x, position.y, this->currentZoom);
+			std::cout << "passable : " << caseChecked.passable << " - weight : " << caseChecked.weight << std::endl;
+		}
+	}
 
 	if (this->mouseClickRight == true && this->onMouseClickRight == true) {
 
 		if(player->getBusy() == false){
 			this->onMouseClickRight = false;
-			sf::Vector2i position = sf::Mouse::getPosition(*window);
-			position.x = position.x * this->currentZoom;
-			position.y = position.y * this->currentZoom;
-			//std::cout << "camera" << this->camera->getPosition().x << " - " << player->getPosition().x << std::endl;
-			if (this->camera->getPosition().x > this->camera->getSize().x / 2) {
-				position.x += this->camera->getPosition().x - this->camera->getSize().x / 2;
-			}
-			if (this->camera->getPosition().y> this->camera->getSize().y / 2) {
-				position.y += this->camera->getPosition().y - this->camera->getSize().y / 2;
-			}
+			sf::Vector2i position = this->GetMousePosition(window);
 			if(position.x > 0 && position.x < this->map->width*this->map->tileWidth && position.y > 0 && position.y < this->map->height*this->map->tileHeight)
 			{
 				std::pair<int, int> pos = this->map->ConvertPosition(position.x, position.y, this->currentZoom);
@@ -130,6 +133,20 @@ void main_game::CatchUserAction(sf::RenderWindow* window)
 	}
 }
 
+sf::Vector2i main_game::GetMousePosition(sf::RenderWindow* window)
+{
+	sf::Vector2i position = sf::Mouse::getPosition(*window);
+	position.x = position.x * this->currentZoom;
+	position.y = position.y * this->currentZoom;
+	//std::cout << "camera" << this->camera->getPosition().x << " - " << player->getPosition().x << std::endl;
+	if (this->camera->getPosition().x > this->camera->getSize().x / 2) {
+		position.x += this->camera->getPosition().x - this->camera->getSize().x / 2;
+	}
+	if (this->camera->getPosition().y> this->camera->getSize().y / 2) {
+		position.y += this->camera->getPosition().y - this->camera->getSize().y / 2;
+	}
+	return position;
+}
 
 void main_game::Update(float const dt, sf::RenderWindow* window)
 {

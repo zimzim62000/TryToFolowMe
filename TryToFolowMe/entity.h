@@ -45,23 +45,22 @@ public:
 
 protected:
 	void MoveOnTarget(float const dt);
-	void AnimateMe();
+	void AnimateMe(const float dt);
 	void SetNewAnimation(std::string nameAnimation);
 	void SetNewRightAnimation(std::string nameAnimation);
 
-	int active;
-	int groupId;
-	bool busy, onMove;
+	int active, groupId;
+	bool busy, onMove, IsAnimate;
 	float speed;
 	std::string name;
 
-	int animateMax;
+	float animateMax;
 	/* Animated none */
-	int animateCount;
+	float animateCount;
 	int animateKey;
 	std::vector<std::string> animated;
 	/* Animated Right */
-	int animateRightCount;
+	float animateRightCount;
 	int animateRightKey;
 	std::vector<std::string> animatedRight;
 

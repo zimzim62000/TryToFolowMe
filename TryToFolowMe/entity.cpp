@@ -9,9 +9,7 @@ Entity::Entity(const float speed)
 	this->active = 1;
 	this->groupId = 0;
 	this->speed = speed;
-	this->animateCount = this->animateRightCount = 0;
-	this->animateMax = 10;
-	this->animateKey = this->animateRightKey = 0;
+	this->IsAnimate = false;
 }
 
 Entity::Entity()
@@ -20,9 +18,7 @@ Entity::Entity()
 	this->active = 1;
 	this->groupId = 0;
 	this->speed = 1;
-	this->animateCount = this->animateRightCount = 0;
-	this->animateMax =  10;
-	this->animateKey = this->animateRightKey = 0;
+	this->IsAnimate = false;
 }
 
 void Entity::setName(const std::string name)
@@ -35,31 +31,33 @@ std::string Entity::getName()
 	return this->name;
 }
 
-void Entity::AnimateMe()
+void Entity::AnimateMe(const float dt)
 {
-	if (this->velocity.x > 0 && this->velocity.y == 0) {
-		this->animateRightCount++;
-		if (this->animateRightCount >= this->animateMax) {
-			this->animateRightCount = 0;
-			this->animateRightKey++;
-			if (this->animateRightKey >= this->animatedRight.size()) {
-				this->animateRightKey = 0;
-			}
-			this->Load(this->animatedRight.at(this->animateRightKey));
-		}
-	}
-	else {
-		//if (this->velocity.x == 0 && this->velocity.y == 0) {
-			this->animateCount++;
-			if (this->animateCount >= this->animateMax) {
-				this->animateCount = 0;
-				this->animateKey++;
-				if (this->animateKey >= this->animated.size()) {
-					this->animateKey = 0;
+	if(this->IsAnimate){
+		if (this->velocity.x > 0 && this->velocity.y == 0) {
+			this->animateRightCount += dt;
+			if (this->animateRightCount >= this->animateMax) {
+				this->animateRightCount = 0;
+				this->animateRightKey++;
+				if (this->animateRightKey >= this->animatedRight.size()) {
+					this->animateRightKey = 0;
 				}
-				this->Load(this->animated.at(this->animateKey));
+				this->Load(this->animatedRight.at(this->animateRightKey));
 			}
-		//}
+		}
+		else {
+			//if (this->velocity.x == 0 && this->velocity.y == 0) {
+				this->animateCount += dt;
+				if (this->animateCount >= this->animateMax) {
+					this->animateCount = 0;
+					this->animateKey++;
+					if (this->animateKey >= this->animated.size()) {
+						this->animateKey = 0;
+					}
+					this->Load(this->animated.at(this->animateKey));
+				}
+			//}
+		}
 	}
 }
 
@@ -87,6 +85,7 @@ void Entity::Load(std::string filename)
 bool Entity::Update(float const dt, sf::RenderWindow* window)
 {
 	this->move(this->velocity * this->speed * dt);
+	this->AnimateMe(dt);
 	return true;
 }
 void Entity::Collision(Entity* entity)

@@ -19,6 +19,7 @@ public:
 	void Destroy(sf::RenderWindow* window);
 private:
 	void CatchUserAction(sf::RenderWindow* window);
+	sf::Vector2i GetMousePosition(sf::RenderWindow* window);
 
 	Camera* camera;
 	MyMap* map;
@@ -29,7 +30,7 @@ private:
 	sf::Text* pausedText;
 	
 	int selected;
-	bool paused, pauseKey, enterKey, debugKey, mouseClickRight, onMouseClickRight, entityActive;
+	bool paused, pauseKey, enterKey, debugKey, mouseClickRight, onMouseClickRight, mouseClickLeft, onMouseClickLeft, entityActive;
 	int zoom;
 	float currentZoom;
 };
