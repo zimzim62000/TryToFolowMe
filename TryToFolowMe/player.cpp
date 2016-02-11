@@ -31,6 +31,11 @@ Player::Player(EntityManager* entityManager, MyMap* map, float x, float y, float
 	this->SetNewRightAnimation("player-right-1.png");
 	this->SetNewRightAnimation("player-right-2.png");
 	this->SetNewRightAnimation("player-right-3.png");
+
+	this->SetNewLeftAnimation("player-left-0.png");
+	this->SetNewLeftAnimation("player-left-1.png");
+	this->SetNewLeftAnimation("player-left-2.png");
+	this->SetNewLeftAnimation("player-left-3.png");
 }
 
 bool Player::Update(float const dt, sf::RenderWindow* window)

@@ -48,6 +48,7 @@ protected:
 	void AnimateMe(const float dt);
 	void SetNewAnimation(std::string nameAnimation);
 	void SetNewRightAnimation(std::string nameAnimation);
+	void SetNewLeftAnimation(std::string nameAnimation);
 
 	int active, groupId;
 	bool busy, onMove, IsAnimate;
@@ -63,6 +64,10 @@ protected:
 	float animateRightCount;
 	int animateRightKey;
 	std::vector<std::string> animatedRight;
+	/* Animated Left */
+	float animateLeftCount;
+	int animateLeftKey;
+	std::vector<std::string> animatedLeft;
 
 private:
 	sf::Texture* texture;

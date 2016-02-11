@@ -44,8 +44,17 @@ void Entity::AnimateMe(const float dt)
 				}
 				this->Load(this->animatedRight.at(this->animateRightKey));
 			}
-		}
-		else {
+		}else if (this->velocity.x < 0 && this->velocity.y == 0) {
+			this->animateLeftCount += dt;
+			if (this->animateLeftCount >= this->animateMax) {
+				this->animateLeftCount = 0;
+				this->animateLeftKey++;
+				if (this->animateLeftKey >= this->animatedLeft.size()) {
+					this->animateLeftKey = 0;
+				}
+				this->Load(this->animatedLeft.at(this->animateLeftKey));
+			}
+		}else {
 			//if (this->velocity.x == 0 && this->velocity.y == 0) {
 				this->animateCount += dt;
 				if (this->animateCount >= this->animateMax) {
@@ -69,6 +78,11 @@ void Entity::SetNewAnimation(std::string nameAnimation)
 void Entity::SetNewRightAnimation(std::string nameAnimation)
 {
 	this->animatedRight.push_back(nameAnimation);
+}
+
+void Entity::SetNewLeftAnimation(std::string nameAnimation)
+{
+	this->animatedLeft.push_back(nameAnimation);
 }
 
 bool Entity::getBusy()

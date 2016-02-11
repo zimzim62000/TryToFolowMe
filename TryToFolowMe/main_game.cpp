@@ -10,7 +10,7 @@ void main_game::Initialize(sf::RenderWindow* window)
 
 	this->map = new MyMap(manager);
 
-	this->map->Load("newmap.json");
+	this->map->Load("newmap1.json");
 
 	std::pair<int, int> playerPosition = this->map->getPositionavailable();
 
@@ -72,21 +72,21 @@ void main_game::CatchUserAction(sf::RenderWindow* window)
 			}
 			if (this->zoom == 0 ) {
 				this->zoom = 0;
-				this->currentZoom = 1;
+				this->currentZoom = 4;//1;
 				this->camera->zoom(this->currentZoom );
-				this->camera->setSize(window->getSize().x, window->getSize().y);
+				this->camera->setSize(window->getSize().x * this->currentZoom, window->getSize().y * this->currentZoom);
 			}
 			if (this->zoom > 1) {
 				this->zoom = 1;
-				this->currentZoom = 2;
+				this->currentZoom = 8;// 2;
 				this->camera->zoom(this->currentZoom);
-				this->camera->setSize(window->getSize().x*2, window->getSize().y * 2);
+				this->camera->setSize(window->getSize().x * this->currentZoom, window->getSize().y * this->currentZoom);
 			}
 			if (this->zoom < -1) {
 				this->zoom = -1;
-				this->currentZoom = 0.5f;
+				this->currentZoom = 2;//0.5f;
 				this->camera->zoom(this->currentZoom);
-				this->camera->setSize(window->getSize().x / 2, window->getSize().y / 2);
+				this->camera->setSize(window->getSize().x * this->currentZoom, window->getSize().y * this->currentZoom);
 			}
 		}
 		if (event.type == sf::Event::Closed)
