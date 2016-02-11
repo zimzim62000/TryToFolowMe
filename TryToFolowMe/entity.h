@@ -5,6 +5,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <string>
+#include <vector>
 #include <queue>
 #include "entity.h"
 #include "point.h"
@@ -44,12 +45,26 @@ public:
 
 protected:
 	void MoveOnTarget(float const dt);
+	void AnimateMe();
+	void SetNewAnimation(std::string nameAnimation);
+	void SetNewRightAnimation(std::string nameAnimation);
 
 	int active;
 	int groupId;
 	bool busy, onMove;
 	float speed;
 	std::string name;
+
+	int animateMax;
+	/* Animated none */
+	int animateCount;
+	int animateKey;
+	std::vector<std::string> animated;
+	/* Animated Right */
+	int animateRightCount;
+	int animateRightKey;
+	std::vector<std::string> animatedRight;
+
 private:
 	sf::Texture* texture;
 	std::queue<Point*> target;

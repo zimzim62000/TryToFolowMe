@@ -24,11 +24,12 @@ private:
 	MyMap* map;
 	EntityManager* manager;
 	Player* player;
+	Entity* ActiveEntity;
 	sf::Font* font;
 	sf::Text* pausedText;
 	
 	int selected;
-	bool paused, pauseKey, enterKey, debugKey, mouseClickRight, onMouseClickRight;
+	bool paused, pauseKey, enterKey, debugKey, mouseClickRight, onMouseClickRight, entityActive;
 	int zoom;
 	float currentZoom;
 };

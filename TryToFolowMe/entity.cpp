@@ -9,6 +9,9 @@ Entity::Entity(const float speed)
 	this->active = 1;
 	this->groupId = 0;
 	this->speed = speed;
+	this->animateCount = this->animateRightCount = 0;
+	this->animateMax = 10;
+	this->animateKey = this->animateRightKey = 0;
 }
 
 Entity::Entity()
@@ -17,6 +20,9 @@ Entity::Entity()
 	this->active = 1;
 	this->groupId = 0;
 	this->speed = 1;
+	this->animateCount = this->animateRightCount = 0;
+	this->animateMax =  10;
+	this->animateKey = this->animateRightKey = 0;
 }
 
 void Entity::setName(const std::string name)
@@ -27,6 +33,44 @@ void Entity::setName(const std::string name)
 std::string Entity::getName()
 {
 	return this->name;
+}
+
+void Entity::AnimateMe()
+{
+	if (this->velocity.x > 0 && this->velocity.y == 0) {
+		this->animateRightCount++;
+		if (this->animateRightCount >= this->animateMax) {
+			this->animateRightCount = 0;
+			this->animateRightKey++;
+			if (this->animateRightKey >= this->animatedRight.size()) {
+				this->animateRightKey = 0;
+			}
+			this->Load(this->animatedRight.at(this->animateRightKey));
+		}
+	}
+	else {
+		//if (this->velocity.x == 0 && this->velocity.y == 0) {
+			this->animateCount++;
+			if (this->animateCount >= this->animateMax) {
+				this->animateCount = 0;
+				this->animateKey++;
+				if (this->animateKey >= this->animated.size()) {
+					this->animateKey = 0;
+				}
+				this->Load(this->animated.at(this->animateKey));
+			}
+		//}
+	}
+}
+
+void Entity::SetNewAnimation(std::string nameAnimation)
+{
+	this->animated.push_back(nameAnimation);
+}
+
+void Entity::SetNewRightAnimation(std::string nameAnimation)
+{
+	this->animatedRight.push_back(nameAnimation);
 }
 
 bool Entity::getBusy()
@@ -72,6 +116,7 @@ void Entity::Destroy()
 Entity::~Entity()
 {
 	delete this->texture;
+	target.empty();
 }
 
 

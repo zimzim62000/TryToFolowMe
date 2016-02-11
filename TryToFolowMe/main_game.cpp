@@ -27,6 +27,8 @@ void main_game::Initialize(sf::RenderWindow* window)
 	this->currentZoom = 1;
 	this->camera = new Camera();
 	this->camera->reset(sf::FloatRect(0, 0, window->getSize().x, window->getSize().y));
+
+	this->entityActive = false;
 }
 
 void main_game::CatchUserAction(sf::RenderWindow* window)
@@ -43,6 +45,10 @@ void main_game::CatchUserAction(sf::RenderWindow* window)
 			if (event.mouseButton.button == sf::Mouse::Right)
 			{
 				this->mouseClickRight = true;
+			}
+			if (event.mouseButton.button == sf::Mouse::Left)
+			{
+				//this->mouseClickRight = true;
 			}
 		}
 		if (event.type == sf::Event::MouseButtonReleased)
@@ -172,4 +178,11 @@ void main_game::Render(float const dt, sf::RenderWindow* window)
 }
 void main_game::Destroy(sf::RenderWindow* window)
 {
+	delete this->camera;
+	delete this->map;
+	delete this->manager;
+	delete this->ActiveEntity;
+	delete this->player;
+	delete this->font;
+	delete this->pausedText;
 }
