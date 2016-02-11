@@ -45,14 +45,14 @@ void MyMap::Load(std::string filename)
 	Value& tilesets = mapFileDoc["tilesets"];
 	Value& properties = tilesets[0]["tileproperties"];
 	
-	Value& blackcase = properties["0"];
+	Value& blackcase = tilesets[0]["tileproperties"]["0"];
 	this->black_case = new case_game(std::stoi(blackcase["passable"].GetString()), std::stoi(blackcase["weight"].GetString()));
 	Value& bruncase = tilesets[0]["tileproperties"]["1"];
 	this->brun_case = new case_game(std::stoi(bruncase["passable"].GetString()), std::stoi(bruncase["weight"].GetString()));
 	Value& greycase = tilesets[0]["tileproperties"]["2"];
 	this->grey_case = new case_game(std::stoi(greycase["passable"].GetString()), std::stoi(greycase["weight"].GetString()));
-	Value& whitecase = tilesets[0]["tileproperties"]["3"];
-	this->white_case = new case_game(std::stoi(whitecase["passable"].GetString()), std::stoi(whitecase["weight"].GetString()));
+	//Value& whitecase = tilesets[0]["tileproperties"]["3"];
+	//this->white_case = new case_game(std::stoi(whitecase["passable"].GetString()), std::stoi(whitecase["weight"].GetString()));
 	
 	this->data = new int[this->width * this->height];
 
@@ -81,15 +81,15 @@ void MyMap::Load(std::string filename)
 
 	sf::Image tileWhite, tileGrey, tileBurn, tileBlack;
 
-	tileWhite.create(32, 32);
-	tileGrey.create(32, 32);
-	tileBurn.create(32, 32);
-	tileBlack.create(32, 32);
+	tileBlack.create(this->tileWidth, this->tileHeight);
+	tileBurn.create(this->tileWidth, this->tileHeight);
+	tileGrey.create(this->tileWidth, this->tileHeight);
+	//tileWhite.create(this->tileWidth, this->tileHeight);	
 
 	tileBlack.copy(*this->tileSetTexture, 0, 0, sf::IntRect(0, 0, this->tileWidth, this->tileHeight), true);
 	tileBurn.copy(*this->tileSetTexture, 0, 0, sf::IntRect(this->tileWidth, 0, this->tileWidth, this->tileHeight), true);
-	tileGrey.copy(*this->tileSetTexture, 0, 0, sf::IntRect(0, this->tileHeight, this->tileWidth, this->tileHeight), true);
-	tileWhite.copy(*this->tileSetTexture, 0, 0, sf::IntRect(this->tileWidth, this->tileHeight, this->tileWidth, this->tileHeight), true);
+	tileGrey.copy(*this->tileSetTexture, 0, 0, sf::IntRect(this->tileWidth*2, 0, this->tileWidth, this->tileHeight), true);
+	//tileWhite.copy(*this->tileSetTexture, 0, 0, sf::IntRect(this->tileWidth, 0, this->tileWidth, this->tileHeight), true);
 
 
 	for (int y = 0; y < this->height; y += 1)
@@ -107,9 +107,10 @@ void MyMap::Load(std::string filename)
 			case 3:
 				this->texture->update(tileGrey, x * this->tileWidth, y * this->tileHeight);
 				break;
+				/*
 			case 4:
 				this->texture->update(tileWhite, x * this->tileWidth, y * this->tileHeight);
-				break;
+				break;*/
 			default:
 				break;
 			}
@@ -233,4 +234,17 @@ std::queue<Point*>  MyMap::CalculateParcours(const sf::Vector2f &start, const sf
 		}*/
 	}
 	return targets;
+}
+
+
+std::pair<int, int> MyMap::getPositionavailable()
+{
+	int x = 0;
+	int y = 0;
+	while (this->getOnThisPositionNoeud(x, y).passable == 0) {
+		x = Utility::randInt(this->width, false)-1;
+		y = Utility::randInt(this->height, false)-1;
+	}
+	
+	return std::pair<int, int>(int(x*this->tileWidth), int(y*this->tileHeight));
 }
