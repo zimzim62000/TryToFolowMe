@@ -71,6 +71,7 @@ void main_game::CatchUserAction(sf::RenderWindow* window)
 				this->zoom = 0;
 				this->currentZoom = 1;
 				this->camera->zoom(this->currentZoom );
+				this->camera->setSize(window->getSize().x, window->getSize().y);
 			}
 			if (this->zoom > 1) {
 				this->zoom = 1;
@@ -177,4 +178,11 @@ void main_game::Render(float const dt, sf::RenderWindow* window)
 }
 void main_game::Destroy(sf::RenderWindow* window)
 {
+	delete this->camera;
+	delete this->map;
+	delete this->manager;
+	delete this->ActiveEntity;
+	delete this->player;
+	delete this->font;
+	delete this->pausedText;
 }

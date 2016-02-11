@@ -15,7 +15,7 @@ int main()
 	sf::ContextSettings antialiasing;
 	antialiasing.antialiasingLevel = 32;
 	sf::RenderWindow window(sf::VideoMode(screen_width, screen_height), "Follow me", sf::Style::Default, antialiasing);
-	//window.setFramerateLimit(60);
+	//window.setFramerateLimit(30);
 	coreState.SetWindow(&window);
 	coreState.SetState(new main_menu());
 
@@ -43,8 +43,8 @@ int main()
 		*/
 		window.clear(sf::Color::Black);
 
-		coreState.Update(dt*FPS);
-		coreState.Render(dt*FPS);
+		coreState.Update(FPS*dt);
+		coreState.Render(FPS*dt);
 
 		dt = deltaTime.restart().asSeconds();
 
