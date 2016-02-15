@@ -18,9 +18,9 @@ Player::Player(EntityManager* entityManager, MyMap* map, float x, float y, float
 	this->setOrigin(0, 0);
 
 	this->IsAnimate = true;
-	this->animateMax = 0.167*Config::FPS;//0.5*Config::FPS;
-	this->animateCount = this->animateRightCount = 0;
-	this->animateKey = this->animateRightKey = 0;
+	this->animateMax = 0.167*Config::FPS;
+	this->animateCount = this->animateRightCount = this->animateLeftCount = 0;
+	this->animateKey = this->animateRightKey = this->animateLeftKey = 0;
 
 	this->SetNewAnimation("player2-0.png"); 
 	this->SetNewAnimation("player2-1.png");
