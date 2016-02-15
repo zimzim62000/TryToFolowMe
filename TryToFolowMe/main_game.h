@@ -28,7 +28,9 @@ private:
 	Entity* ActiveEntity;
 	sf::Font* font;
 	sf::Text* pausedText;
-	
+	sf::Text* nameActiveEntity;
+	sf::View ItemView;
+
 	int selected;
 	bool paused, pauseKey, enterKey, debugKey, mouseClickRight, onMouseClickRight, mouseClickLeft, onMouseClickLeft, entityActive;
 	int zoom;

@@ -10,6 +10,7 @@ Entity::Entity(const float speed)
 	this->groupId = 0;
 	this->speed = speed;
 	this->IsAnimate = false;
+	this->IsONScene = false;
 }
 
 Entity::Entity()
@@ -19,6 +20,17 @@ Entity::Entity()
 	this->groupId = 0;
 	this->speed = 1;
 	this->IsAnimate = false;
+	this->IsONScene = false;
+}
+
+void Entity::setOnScene(const bool enable)
+{
+	this->IsONScene = enable;
+}
+
+bool Entity::getOnScene()
+{
+	return this->IsONScene;
 }
 
 void Entity::setName(const std::string name)

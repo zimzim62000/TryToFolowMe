@@ -16,6 +16,7 @@ Player::Player(EntityManager* entityManager, MyMap* map, float x, float y, float
 	this->direction.y = 0;
 	this->angle = 0;
 	this->setOrigin(0, 0);
+	this->IsONScene = true;
 
 	this->IsAnimate = true;
 	this->animateMax = 0.167*Config::FPS;
@@ -55,7 +56,5 @@ void Player::Collision(Entity* entity)
 
 Player::~Player()
 {
-	delete this->map;
-	delete this->entityManager;
 	Entity::~Entity();
 }

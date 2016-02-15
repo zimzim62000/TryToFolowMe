@@ -203,9 +203,9 @@ case_game* MyMap::getCaseGame(const int value) {
 	case 3:
 		return this->grey_case;
 		break;
-	case 4:
+	/*case 4:
 		return this->white_case;
-		break;
+		break;*/
 	default:
 		break;
 	}
@@ -224,10 +224,10 @@ std::queue<Point*>  MyMap::CalculateParcours(const sf::Vector2f &start, const sf
 
 	if(start_x != end_x || start_y != end_y){
 		PathFinding MyPathFinding;
-		sf::Clock deltaTime;
+		//sf::Clock deltaTime;
 		MyPathFinding.findRoad(this, start_x, start_y, end_x, end_y);
 		if(MyPathFinding.chemin.size() != 0){
-			std::cout << deltaTime.restart().asSeconds() << std::endl;
+			//std::cout << deltaTime.restart().asSeconds() << std::endl;
 			while(MyPathFinding.chemin.size() > 0) {
 				targets.push(new Point(MyPathFinding.chemin.front().x*this->tileWidth, MyPathFinding.chemin.front().y*this->tileWidth));
 				MyPathFinding.chemin.pop_front();

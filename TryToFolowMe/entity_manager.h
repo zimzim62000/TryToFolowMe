@@ -14,7 +14,8 @@ public:
 	void Add(std::string name, Entity* entity);
 	bool Update(float const dt, sf::RenderWindow* window);
 	void Render(float const dt, sf::RenderWindow* window);
-	Entity* EntityManager::Get(std::string name);
+	Entity* Get(std::string name);
+	Entity* GetAtThisPosition(const int x, const int y, const int tileWidth, const int tileHeight);
 private:
 	std::unordered_map<std::string, Entity*> entities;
 };

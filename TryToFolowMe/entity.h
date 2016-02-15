@@ -42,6 +42,8 @@ public:
 	bool getOnMovement();
 	void setName(std::string name);
 	std::string getName();
+	void setOnScene(const bool enable);
+	bool getOnScene();
 
 protected:
 	void MoveOnTarget(float const dt);
@@ -51,7 +53,7 @@ protected:
 	void SetNewLeftAnimation(std::string nameAnimation);
 
 	int active, groupId;
-	bool busy, onMove, IsAnimate;
+	bool busy, onMove, IsAnimate, IsONScene;
 	float speed;
 	std::string name;
 

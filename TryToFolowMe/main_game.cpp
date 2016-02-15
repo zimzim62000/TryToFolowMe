@@ -1,5 +1,6 @@
 #include "main_game.h"
 #include "main_menu.h"
+#include "enemy.h"
 
 
 void main_game::Initialize(sf::RenderWindow* window)
@@ -14,7 +15,30 @@ void main_game::Initialize(sf::RenderWindow* window)
 
 	std::pair<int, int> playerPosition = this->map->getPositionavailable();
 
-	this->manager->Add("player", new Player(this->manager, this->map, playerPosition.first, playerPosition.second , 5.0f));
+	Player* player = new Player(this->manager, this->map, playerPosition.first, playerPosition.second, 5.0f);
+
+	this->manager->Add("player", player);
+
+	sf::Clock deltaTime;
+
+	for (int(i) = 0; i < 100; i++) {
+		playerPosition = this->map->getPositionavailable();
+
+		Enemy* enemy = new Enemy(this->manager, this->map, playerPosition.first, playerPosition.second, 10.0f);
+
+		playerPosition = this->map->getPositionavailable();
+
+		std::queue<Point*> roadMap = this->map->CalculateParcours(enemy->getPosition(), sf::Vector2i(playerPosition.first, playerPosition.second), window, 1);
+		while (roadMap.size() > 0) {
+			enemy->AddTarget(roadMap.front()->x, roadMap.front()->y);
+			roadMap.pop();
+		}
+		roadMap.empty();
+
+		this->manager->Add("Enemy-" +  std::to_string(i), enemy);
+	}
+
+	std::cout << "Generate : " << deltaTime.restart().asSeconds() << std::endl;
 
 	this->font = new sf::Font();
 	this->font->loadFromFile("Graphics/font.ttf");
@@ -27,13 +51,17 @@ void main_game::Initialize(sf::RenderWindow* window)
 	this->currentZoom = 1;
 	this->camera = new Camera();
 	this->camera->reset(sf::FloatRect(0, 0, window->getSize().x, window->getSize().y));
+	this->camera->folowEntity(player);
+
+
+	this->ActiveEntity = new Entity();
+
+	this->ItemView = sf::View();
 }
 
 void main_game::CatchUserAction(sf::RenderWindow* window)
 {
 	this->debugKey = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F2);
-
-	Entity* player = this->manager->Get("player");
 	
 	sf::Event event;
 	while (window->pollEvent(event))
@@ -91,31 +119,68 @@ void main_game::CatchUserAction(sf::RenderWindow* window)
 		}
 		if (event.type == sf::Event::Closed)
 			window->close();
+
+		
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+			this->ActiveEntity = new Entity();
+			this->camera->move(-10, 0);
+		}
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+			this->ActiveEntity = new Entity();
+			this->camera->move(10, 0);
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+			this->ActiveEntity = new Entity();
+			this->camera->move(0, -10);
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+			this->ActiveEntity = new Entity();
+			this->camera->move(0, 10);
+		}
+		
 	}
 	
 	if (this->mouseClickLeft == true && this->onMouseClickLeft == true) {
 		this->onMouseClickLeft = false;
+
+
+		sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
+
+		// conversion en coordonnées "monde"
+		sf::Vector2f worldPos = window->mapPixelToCoords(pixelPos);
+		std::cout << " x : " << worldPos.x << " --- y : " << worldPos.y << std::endl;
+
+		Entity* entityPosition = this->manager->GetAtThisPosition(worldPos.x, worldPos.y, this->map->tileWidth, this->map->tileHeight);
+		if (entityPosition->getOnScene()) {
+			this->ActiveEntity = entityPosition;
+			this->nameActiveEntity = new sf::Text(this->ActiveEntity->getName(), *this->font, 192U);
+		}
+
+		/*
 		sf::Vector2i position = this->GetMousePosition(window);
 		if (position.x > 0 && position.x < this->map->width*this->map->tileWidth && position.y > 0 && position.y < this->map->height*this->map->tileHeight)
 		{
-			case_game caseChecked = this->map->getOnThisPosition(position.x, position.y, this->currentZoom);
-			std::cout << "passable : " << caseChecked.passable << " - weight : " << caseChecked.weight << std::endl;
+			Entity* entityPosition = this->manager->GetAtThisPosition(position.x, position.y, this->map->tileWidth, this->map->tileHeight);
+			if (entityPosition->getOnScene()) {
+				this->ActiveEntity = entityPosition;
+				this->nameActiveEntity = new sf::Text(this->ActiveEntity->getName(), *this->font, 192U);
+			}
 		}
+		*/
 	}
 
-	if (this->mouseClickRight == true && this->onMouseClickRight == true) {
+	if (this->mouseClickRight == true && this->onMouseClickRight == true && this->ActiveEntity->getOnScene()) {
 
-		if(player->getBusy() == false){
+		if(this->ActiveEntity->getBusy() == false){
 			this->onMouseClickRight = false;
 			sf::Vector2i position = this->GetMousePosition(window);
 			if(position.x > 0 && position.x < this->map->width*this->map->tileWidth && position.y > 0 && position.y < this->map->height*this->map->tileHeight)
 			{
 				std::pair<int, int> pos = this->map->ConvertPosition(position.x, position.y, this->currentZoom);
-				//std::cout << "pos x : " << position.x << " pos y : " << position.y << " convert x : " << pos.first << " y " << pos.second << std::endl;
 				if(this->map->getOnThisPositionNoeud(pos.first, pos.second).passable == 1){
-					std::queue<Point*> roadMap = this->map->CalculateParcours(player->getPosition(), position, window, this->currentZoom);
+					std::queue<Point*> roadMap = this->map->CalculateParcours(this->ActiveEntity->getPosition(), position, window, this->currentZoom);
 					while (roadMap.size() > 0) {
-						player->AddTarget(roadMap.front()->x, roadMap.front()->y);
+						this->ActiveEntity->AddTarget(roadMap.front()->x, roadMap.front()->y);
 						roadMap.pop();
 					}
 					roadMap.empty();
@@ -128,7 +193,7 @@ void main_game::CatchUserAction(sf::RenderWindow* window)
 				std::cout << "outside the map" << std::endl;
 			}
 		}else {
-			std::cout << "Player busy" << std::endl;
+			std::cout << "Active Entity busy" << std::endl;
 		}
 	}
 }
@@ -182,8 +247,6 @@ void main_game::Update(float const dt, sf::RenderWindow* window)
 }
 void main_game::Render(float const dt, sf::RenderWindow* window)
 {
-	Entity* player = this->manager->Get("player");
-	this->camera->folowEntity(player);
 	window->setView(*this->camera);
 
 	window->draw(*this->map);
@@ -191,6 +254,17 @@ void main_game::Render(float const dt, sf::RenderWindow* window)
 
 	if(this->paused){
 		window->draw(*this->pausedText);
+	}
+
+	if (this->ActiveEntity->getOnScene()) {
+		this->ItemView.setViewport(sf::FloatRect(0, 0, 0.1f, 0.1f));
+		this->camera->folowEntity(this->ActiveEntity);
+
+		this->nameActiveEntity->setPosition(
+			(this->ItemView.getSize().x-this->nameActiveEntity->getGlobalBounds().width)/2,
+			(this->ItemView.getSize().y - this->nameActiveEntity->getGlobalBounds().height)/2 );
+		window->setView(this->ItemView);
+		window->draw(*this->nameActiveEntity);
 	}
 }
 void main_game::Destroy(sf::RenderWindow* window)
