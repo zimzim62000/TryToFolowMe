@@ -12,8 +12,6 @@ class Player : public Entity
 public:
 	Player(EntityManager* entityManager, MyMap* map, float x, float y, float speed);
 	bool Update(float const dt, sf::RenderWindow* window);
-	void Collision(Entity* entity);
-	~Player();
 private:
 	MyMap* map;
 	float speed, speedAngle, angle, engine, brakes, speedMax;

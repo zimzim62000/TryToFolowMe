@@ -2,7 +2,7 @@
 
 #include "entity_manager.h"
 
-EntityManager::EntityManager(){}
+EntityManager::EntityManager() { this->numberId = 0; }
 
 void EntityManager::Add(std::string name, Entity* entity)
 {
@@ -49,7 +49,7 @@ Entity* EntityManager::GetAtThisPosition(const int x, const int y, const int til
 {
 	for (auto& iterator : this->entities) {
 		sf::Vector2f position = iterator.second->getPosition();
-		if (abs(position.x / tileWidth) == abs(x/tileWidth) && abs(position.y / tileHeight) == abs(y / tileHeight)) {
+		if(iterator.second->getGlobalBounds().intersects(sf::FloatRect(position.x, position.y, tileWidth ,tileHeight))){
 			return iterator.second;
 		}
 	}

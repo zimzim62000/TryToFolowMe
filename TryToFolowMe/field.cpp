@@ -1,14 +1,14 @@
 #include "main_game.h"
-#include "enemy.h"
+#include "field.h"
 #include "Utility.h"
 #include "config.h"
 
 #include <iostream>
 
 
-Enemy::Enemy(EntityManager* entityManager, MyMap* map, float x, float y, float speed) : Entity(speed)
+Field::Field(EntityManager* entityManager, MyMap* map, float x, float y) : Entity()
 {
-	this->Load("enemy.png");
+	this->Load("field.png");
 	this->setPosition(x, y);
 	this->map = map;
 	this->groupId = 1;
@@ -20,10 +20,8 @@ Enemy::Enemy(EntityManager* entityManager, MyMap* map, float x, float y, float s
 	this->IsONScene = true;
 }
 
-bool Enemy::Update(float const dt, sf::RenderWindow* window)
+bool Field::Update(float const dt, sf::RenderWindow* window)
 {
-	this->MoveOnTarget(dt);
-
 	Entity::Update(dt, window);
 
 	return true;

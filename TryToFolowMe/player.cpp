@@ -47,14 +47,3 @@ bool Player::Update(float const dt, sf::RenderWindow* window)
 	
 	return true;
 }
-
-
-void Player::Collision(Entity* entity)
-{
-	
-}
-
-Player::~Player()
-{
-	Entity::~Entity();
-}

@@ -176,7 +176,7 @@ MyMap::~MyMap()
 	delete this->black_case;
 	delete this->brun_case;
 	delete this->grey_case;
-	delete this->white_case;
+	//delete this->white_case;
 }
 
 std::pair<int, int> MyMap::ConvertPosition(const int x, const int y, const float zoom)

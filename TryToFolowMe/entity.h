@@ -52,7 +52,7 @@ protected:
 	void SetNewRightAnimation(std::string nameAnimation);
 	void SetNewLeftAnimation(std::string nameAnimation);
 
-	int active, groupId;
+	int active, groupId, id;
 	bool busy, onMove, IsAnimate, IsONScene;
 	float speed;
 	std::string name;

@@ -24,7 +24,6 @@ private:
 	Camera* camera;
 	MyMap* map;
 	EntityManager* manager;
-	Player* player;
 	Entity* ActiveEntity;
 	sf::Font* font;
 	sf::Text* pausedText;

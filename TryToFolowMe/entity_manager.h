@@ -18,6 +18,7 @@ public:
 	Entity* GetAtThisPosition(const int x, const int y, const int tileWidth, const int tileHeight);
 private:
 	std::unordered_map<std::string, Entity*> entities;
+	int numberId;
 };
 
 #endif EntityManager_Zim

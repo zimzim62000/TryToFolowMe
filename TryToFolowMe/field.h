@@ -1,14 +1,14 @@
-#ifndef Enemy_Zim
-#define Enemy_Zim
+#ifndef Field_Zim
+#define Field_Zim
 
 #pragma once
 
 #include "entity.h"
 
-class Enemy : public Entity
+class Field : public Entity
 {
 public:
-	Enemy(EntityManager* entityManager, MyMap* map, float x, float y, float speed);
+	Field(EntityManager* entityManager, MyMap* map, float x, float y);
 	bool Update(float const dt, sf::RenderWindow* window);
 private:
 	MyMap* map;
@@ -18,4 +18,4 @@ private:
 	sf::Vector2f direction;
 };
 
-#endif Enemy_Zim
+#endif Field_Zim

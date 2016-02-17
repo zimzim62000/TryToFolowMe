@@ -1,5 +1,6 @@
 #include "main_game.h"
 #include "main_menu.h"
+#include "field.h"
 #include "enemy.h"
 
 
@@ -15,10 +16,17 @@ void main_game::Initialize(sf::RenderWindow* window)
 
 	std::pair<int, int> playerPosition = this->map->getPositionavailable();
 
-	Player* player = new Player(this->manager, this->map, playerPosition.first, playerPosition.second, 5.0f);
+	Player* player = new Player(this->manager, this->map, playerPosition.first, playerPosition.second, 15.0f);
 
 	this->manager->Add("player", player);
 
+	playerPosition = this->map->getPositionavailable();
+
+	Field* field = new Field(this->manager, this->map, playerPosition.first, playerPosition.second);
+
+	this->manager->Add("field", field);
+
+	/*
 	sf::Clock deltaTime;
 
 	for (int(i) = 0; i < 100; i++) {
@@ -39,6 +47,7 @@ void main_game::Initialize(sf::RenderWindow* window)
 	}
 
 	std::cout << "Generate : " << deltaTime.restart().asSeconds() << std::endl;
+	*/
 
 	this->font = new sf::Font();
 	this->font->loadFromFile("Graphics/font.ttf");
@@ -48,9 +57,9 @@ void main_game::Initialize(sf::RenderWindow* window)
 	this->pausedText->setPosition(window->getSize().x / 2, window->getSize().y / 2);
 
 	this->zoom = 0;
-	this->currentZoom = 1;
+	this->currentZoom = 4;
 	this->camera = new Camera();
-	this->camera->reset(sf::FloatRect(0, 0, window->getSize().x, window->getSize().y));
+	this->camera->reset(sf::FloatRect(0, 0, window->getSize().x*this->currentZoom, window->getSize().y*this->currentZoom));
 	this->camera->folowEntity(player);
 
 
@@ -119,44 +128,12 @@ void main_game::CatchUserAction(sf::RenderWindow* window)
 		}
 		if (event.type == sf::Event::Closed)
 			window->close();
-
-		
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-			this->ActiveEntity = new Entity();
-			this->camera->move(-10, 0);
-		}
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-			this->ActiveEntity = new Entity();
-			this->camera->move(10, 0);
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-			this->ActiveEntity = new Entity();
-			this->camera->move(0, -10);
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-			this->ActiveEntity = new Entity();
-			this->camera->move(0, 10);
-		}
-		
 	}
 	
 	if (this->mouseClickLeft == true && this->onMouseClickLeft == true) {
 		this->onMouseClickLeft = false;
 
 
-		sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
-
-		// conversion en coordonnées "monde"
-		sf::Vector2f worldPos = window->mapPixelToCoords(pixelPos);
-		std::cout << " x : " << worldPos.x << " --- y : " << worldPos.y << std::endl;
-
-		Entity* entityPosition = this->manager->GetAtThisPosition(worldPos.x, worldPos.y, this->map->tileWidth, this->map->tileHeight);
-		if (entityPosition->getOnScene()) {
-			this->ActiveEntity = entityPosition;
-			this->nameActiveEntity = new sf::Text(this->ActiveEntity->getName(), *this->font, 192U);
-		}
-
-		/*
 		sf::Vector2i position = this->GetMousePosition(window);
 		if (position.x > 0 && position.x < this->map->width*this->map->tileWidth && position.y > 0 && position.y < this->map->height*this->map->tileHeight)
 		{
@@ -166,7 +143,6 @@ void main_game::CatchUserAction(sf::RenderWindow* window)
 				this->nameActiveEntity = new sf::Text(this->ActiveEntity->getName(), *this->font, 192U);
 			}
 		}
-		*/
 	}
 
 	if (this->mouseClickRight == true && this->onMouseClickRight == true && this->ActiveEntity->getOnScene()) {
@@ -195,6 +171,23 @@ void main_game::CatchUserAction(sf::RenderWindow* window)
 		}else {
 			std::cout << "Active Entity busy" << std::endl;
 		}
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+		this->ActiveEntity = new Entity();
+		this->camera->move(-10, 0);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+		this->ActiveEntity = new Entity();
+		this->camera->move(10, 0);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+		this->ActiveEntity = new Entity();
+		this->camera->move(0, -10);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+		this->ActiveEntity = new Entity();
+		this->camera->move(0, 10);
 	}
 }
 
@@ -273,7 +266,6 @@ void main_game::Destroy(sf::RenderWindow* window)
 	delete this->map;
 	delete this->manager;
 	delete this->ActiveEntity;
-	delete this->player;
 	delete this->font;
 	delete this->pausedText;
 }
